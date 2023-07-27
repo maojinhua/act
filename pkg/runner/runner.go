@@ -102,25 +102,29 @@ func (runner *runnerImpl) configure() (Runner, error) {
 }
 
 // NewPlanExecutor ...
+// 生成计划执行器，参数是执行计划
 func (runner *runnerImpl) NewPlanExecutor(plan *model.Plan) common.Executor {
+	fmt.Println("runner NewPlanExecutor")
 	maxJobNameLen := 0
 
 	stagePipeline := make([]common.Executor, 0)
 	log.Debugf("Plan Stages: %v", plan.Stages)
+	fmt.Println("runner NewPlanExecutor Plan Stages: ", plan.Stages[0].Runs[0].JobID)
 
 	for i := range plan.Stages {
 		stage := plan.Stages[i]
+		fmt.Println("NewPlanExecutor stage.GetJobIDs()", stage.GetJobIDs())
 		stagePipeline = append(stagePipeline, func(ctx context.Context) error {
 			pipeline := make([]common.Executor, 0)
 			for _, run := range stage.Runs {
-				log.Debugf("Stages Runs: %v", stage.Runs)
+				log.Infof("Stages Runs: %v", stage.Runs)
 				stageExecutor := make([]common.Executor, 0)
 				job := run.Job()
-				log.Debugf("Job.Name: %v", job.Name)
-				log.Debugf("Job.RawNeeds: %v", job.RawNeeds)
-				log.Debugf("Job.RawRunsOn: %v", job.RawRunsOn)
-				log.Debugf("Job.Env: %v", job.Env)
-				log.Debugf("Job.If: %v", job.If)
+				log.Infof("NewPlanExecutor Job.Name: %v", job.Name)
+				log.Infof("NewPlanExecutor Job.RawNeeds: %v", job.RawNeeds)
+				log.Infof("NewPlanExecutor Job.RawRunsOn: %v", job.RawRunsOn)
+				log.Infof("NewPlanExecutor Job.Env: %v", job.Env)
+				log.Infof("NewPlanExecutor Job.If: %v", job.If)
 				for step := range job.Steps {
 					if nil != job.Steps[step] {
 						log.Debugf("Job.Steps: %v", job.Steps[step].String())
@@ -155,11 +159,11 @@ func (runner *runnerImpl) NewPlanExecutor(plan *model.Plan) common.Executor {
 				if m, err := job.GetMatrixes(); err != nil {
 					log.Errorf("Error while get job's matrix: %v", err)
 				} else {
-					log.Debugf("Job Matrices: %v", m)
-					log.Debugf("Runner Matrices: %v", runner.config.Matrix)
+					log.Infof("Job Matrices: %v", m)
+					log.Infof("Runner Matrices: %v", runner.config.Matrix)
 					matrixes = selectMatrixes(m, runner.config.Matrix)
 				}
-				log.Debugf("Final matrix after applying user inclusions '%v'", matrixes)
+				log.Infof("Final matrix after applying user inclusions '%v'", matrixes)
 
 				maxParallel := 4
 				if job.Strategy != nil {
@@ -197,11 +201,13 @@ func (runner *runnerImpl) NewPlanExecutor(plan *model.Plan) common.Executor {
 			if 1 > ncpu {
 				ncpu = 1
 			}
+			fmt.Println("Detected CPUs ", ncpu)
 			log.Debugf("Detected CPUs: %d", ncpu)
 			return common.NewParallelExecutor(ncpu, pipeline...)(ctx)
 		})
 	}
 
+	fmt.Println("runner start NewPipelineExecutor")
 	return common.NewPipelineExecutor(stagePipeline...).Then(handleFailure(plan))
 }
 

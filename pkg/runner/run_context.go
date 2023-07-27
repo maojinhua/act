@@ -211,7 +211,7 @@ func (rc *RunContext) startHostEnvironment() common.Executor {
 				}
 			}
 		}
-
+		fmt.Println("run context startHostEnvironment NewPipelineExecutor")
 		return common.NewPipelineExecutor(
 			rc.JobContainer.Copy(rc.JobContainer.GetActPath()+"/", &container.FileEntry{
 				Name: "workflow/event.json",
@@ -291,6 +291,7 @@ func (rc *RunContext) startJobContainer() common.Executor {
 			return errors.New("Failed to create job container")
 		}
 
+		fmt.Println("run context startJobContainer NewPipelineExecutor")
 		return common.NewPipelineExecutor(
 			rc.JobContainer.Pull(rc.Config.ForcePull),
 			rc.stopJobContainer(),
@@ -310,6 +311,7 @@ func (rc *RunContext) startJobContainer() common.Executor {
 }
 
 func (rc *RunContext) execJobContainer(cmd []string, env map[string]string, user, workdir string) common.Executor {
+	fmt.Println("execJobContainer")
 	return func(ctx context.Context) error {
 		return rc.JobContainer.Exec(cmd, env, user, workdir)(ctx)
 	}

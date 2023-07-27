@@ -33,6 +33,7 @@ func newRemoteReusableWorkflowExecutor(rc *RunContext) common.Executor {
 	filename := fmt.Sprintf("%s/%s@%s", remoteReusableWorkflow.Org, remoteReusableWorkflow.Repo, remoteReusableWorkflow.Ref)
 	workflowDir := fmt.Sprintf("%s/%s", rc.ActionCacheDir(), safeFilename(filename))
 
+	fmt.Println("reusable workflow NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		newMutexExecutor(cloneIfRequired(rc, *remoteReusableWorkflow, workflowDir)),
 		newReusableWorkflowExecutor(rc, workflowDir, fmt.Sprintf("./.github/workflows/%s", remoteReusableWorkflow.Filename)),
@@ -89,6 +90,7 @@ func newReusableWorkflowExecutor(rc *RunContext, directory string, workflow stri
 			return err
 		}
 
+		fmt.Println("reusable_workflow NewPlanExecutor")
 		return runner.NewPlanExecutor(plan)(ctx)
 	}
 }

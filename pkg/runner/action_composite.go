@@ -78,6 +78,7 @@ func newCompositeRunContext(ctx context.Context, parent *RunContext, step action
 }
 
 func execAsComposite(step actionStep) common.Executor {
+	fmt.Println("execAsComposite")
 	rc := step.getRunContext()
 	action := step.getActionModel()
 
@@ -181,9 +182,11 @@ func (rc *RunContext) compositeExecutor(action *model.Action) *compositeSteps {
 	steps = append(steps, common.JobError)
 	return &compositeSteps{
 		pre: func(ctx context.Context) error {
+			fmt.Println("RunContext compositeSteps pre NewPipelineExecutor")
 			return common.NewPipelineExecutor(preSteps...)(common.WithJobErrorContainer(ctx))
 		},
 		main: func(ctx context.Context) error {
+			fmt.Println("RunContext compositeSteps main NewPipelineExecutor")
 			return common.NewPipelineExecutor(steps...)(common.WithJobErrorContainer(ctx))
 		},
 		post: postExecutor,

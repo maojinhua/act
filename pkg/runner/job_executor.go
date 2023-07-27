@@ -113,6 +113,7 @@ func newJobExecutor(info jobInfo, sf stepFactory, rc *RunContext) common.Executo
 	pipeline = append(pipeline, preSteps...)
 	pipeline = append(pipeline, steps...)
 
+	fmt.Println("job_executor NewPipelineExecutor")
 	return common.NewPipelineExecutor(info.startContainer(), common.NewPipelineExecutor(pipeline...).
 		Finally(func(ctx context.Context) error { //nolint:contextcheck
 			var cancel context.CancelFunc

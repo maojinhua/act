@@ -65,9 +65,11 @@ func supportsContainerImagePlatform(ctx context.Context, cli client.APIClient) b
 }
 
 func (cr *containerReference) Create(capAdd []string, capDrop []string) common.Executor {
+	fmt.Println("docker runner containerReference Create NewPipelineExecutor")
 	return common.
 		NewInfoExecutor("%sdocker create image=%s platform=%s entrypoint=%+q cmd=%+q", logPrefix, cr.input.Image, cr.input.Platform, cr.input.Entrypoint, cr.input.Cmd).
 		Then(
+
 			common.NewPipelineExecutor(
 				cr.connect(),
 				cr.find(),
@@ -77,6 +79,7 @@ func (cr *containerReference) Create(capAdd []string, capDrop []string) common.E
 }
 
 func (cr *containerReference) Start(attach bool) common.Executor {
+	fmt.Println("docker runner containerReference Start NewPipelineExecutor")
 	return common.
 		NewInfoExecutor("%sdocker run image=%s platform=%s entrypoint=%+q cmd=%+q", logPrefix, cr.input.Image, cr.input.Platform, cr.input.Entrypoint, cr.input.Cmd).
 		Then(
@@ -114,6 +117,7 @@ func (cr *containerReference) Pull(forcePull bool) common.Executor {
 }
 
 func (cr *containerReference) Copy(destPath string, files ...*FileEntry) common.Executor {
+	fmt.Println("docker runner containerReference Copy NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		cr.connect(),
 		cr.find(),
@@ -122,6 +126,7 @@ func (cr *containerReference) Copy(destPath string, files ...*FileEntry) common.
 }
 
 func (cr *containerReference) CopyDir(destPath string, srcPath string, useGitIgnore bool) common.Executor {
+	fmt.Println("docker runner containerReference CopyDir NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		common.NewInfoExecutor("%sdocker cp src=%s dst=%s", logPrefix, srcPath, destPath),
 		cr.copyDir(destPath, srcPath, useGitIgnore),
@@ -152,6 +157,7 @@ func (cr *containerReference) UpdateFromImageEnv(env *map[string]string) common.
 }
 
 func (cr *containerReference) Exec(command []string, env map[string]string, user, workdir string) common.Executor {
+	fmt.Println("docker runner containerReference Exec NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		common.NewInfoExecutor("%sdocker exec cmd=[%s] user=%s workdir=%s", logPrefix, strings.Join(command, " "), user, workdir),
 		cr.connect(),
@@ -161,6 +167,7 @@ func (cr *containerReference) Exec(command []string, env map[string]string, user
 }
 
 func (cr *containerReference) Remove() common.Executor {
+	fmt.Println("docker runner containerReference Remove NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		cr.connect(),
 		cr.find(),

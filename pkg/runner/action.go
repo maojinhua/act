@@ -217,6 +217,7 @@ func removeGitIgnore(ctx context.Context, directory string) error {
 //
 //nolint:gocyclo
 func execAsDocker(ctx context.Context, step actionStep, actionName string, basedir string, localAction bool) error {
+	fmt.Println("execAsDocker")
 	logger := common.Logger(ctx)
 	rc := step.getRunContext()
 	action := step.getActionModel()
@@ -293,6 +294,7 @@ func execAsDocker(ctx context.Context, step actionStep, actionName string, based
 		}
 	}
 	stepContainer := newStepContainer(ctx, step, image, cmd, entrypoint)
+	fmt.Println("action NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		prepImage,
 		stepContainer.Pull(forcePull),

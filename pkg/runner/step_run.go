@@ -28,6 +28,7 @@ func (sr *stepRun) pre() common.Executor {
 
 func (sr *stepRun) main() common.Executor {
 	sr.env = map[string]string{}
+	fmt.Println("step_run main NewPipelineExecutor")
 	return runStepExecutor(sr, stepStageMain, common.NewPipelineExecutor(
 		sr.setupShellCommandExecutor(),
 		func(ctx context.Context) error {

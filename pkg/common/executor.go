@@ -51,6 +51,7 @@ func NewDebugExecutor(format string, args ...interface{}) Executor {
 
 // NewPipelineExecutor creates a new executor from a series of other executors
 func NewPipelineExecutor(executors ...Executor) Executor {
+	fmt.Println("NewPipelineExecutor NewPipelineExecutor len(executors) ", len(executors))
 	if len(executors) == 0 {
 		return func(ctx context.Context) error {
 			return nil

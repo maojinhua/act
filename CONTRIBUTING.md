@@ -44,7 +44,7 @@ When submitting code, please make every effort to follow existing conventions an
 - Please run `go fmt ./...` before committing to ensure code aligns with go standards.
 - We use [`golangci-lint`](https://golangci-lint.run/) for linting Go code, run `golangci-lint run --fix` before submitting PR. Editors such as Visual Studio Code or JetBrains IntelliJ; with Go support plugin will offer `golangci-lint` automatically.
 - There are additional linters and formatters for files such as Markdown documents or YAML/JSON:
-  - Please refer to the [Makefile](Makefile) or [`lint` job in our workflow](.github/workflows/checks.yml) to see how to those linters/formatters work.
+  - Please refer to the [Makefile](Makefile) or [`lint` job in our workflow](.github1/workflows/checks.yml) to see how to those linters/formatters work.
   - You can lint codebase by running `go run main.go -j lint --env RUN_LOCAL=true` or `act -j lint --env RUN_LOCAL=true`
   - In `Makefile`, there are tools that require `npx` which is shipped with `nodejs`.
   - Our `Makefile` exports `GITHUB_TOKEN` from `~/.config/github/token`, you have been warned.

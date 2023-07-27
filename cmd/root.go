@@ -367,6 +367,7 @@ func isDockerHostURI(daemonPath string) bool {
 
 //nolint:gocyclo
 func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []string) error {
+	fmt.Println("newRunCommand")
 	return func(cmd *cobra.Command, args []string) error {
 		if input.jsonLogger {
 			log.SetFormatter(&log.JSONFormatter{})
@@ -378,6 +379,7 @@ func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []str
 
 		// Prefer DOCKER_HOST, don't override it
 		socketPath, hasDockerHost := os.LookupEnv("DOCKER_HOST")
+		fmt.Println("hasDockerHost ", hasDockerHost)
 		if !hasDockerHost {
 			// a - in containerDaemonSocket means don't mount, preserve this value
 			// otherwise if input.containerDaemonSocket is a filepath don't use it as socketPath
@@ -398,6 +400,8 @@ func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []str
 			os.Setenv("DOCKER_HOST", socketPath)
 		}
 
+		fmt.Println("runtime.GOOS ", runtime.GOOS)
+		fmt.Println("runtime.GOARCH ", runtime.GOARCH)
 		if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" && input.containerArchitecture == "" {
 			l := log.New()
 			l.SetFormatter(&log.TextFormatter{
@@ -571,6 +575,7 @@ func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []str
 			log.Warnf(deprecationWarning, "container-cap-drop", fmt.Sprintf("--cap-drop=%s", input.containerCapDrop))
 		}
 
+		fmt.Println("run the plan")
 		// run the plan
 		config := &runner.Config{
 			Actor:                              input.actor,
@@ -634,6 +639,7 @@ func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []str
 		if watch, err := cmd.Flags().GetBool("watch"); err != nil {
 			return err
 		} else if watch {
+			fmt.Println("root watchAndRun NewPlanExecutor")
 			err = watchAndRun(ctx, r.NewPlanExecutor(plan))
 			if err != nil {
 				return err
@@ -641,11 +647,13 @@ func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []str
 			return plannerErr
 		}
 
+		fmt.Println("root normal NewPlanExecutor")
 		executor := r.NewPlanExecutor(plan).Finally(func(ctx context.Context) error {
 			cancel()
 			_ = cacheHandler.Close()
 			return nil
 		})
+		fmt.Println("start executor ")
 		err = executor(ctx)
 		if err != nil {
 			return err

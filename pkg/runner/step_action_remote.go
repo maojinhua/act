@@ -87,6 +87,7 @@ func (sar *stepActionRemote) prepareActionExecutor() common.Executor {
 			}
 		}
 
+		fmt.Println("step_action_remote prepareActionExecutor NewPipelineExecutor")
 		return common.NewPipelineExecutor(
 			ntErr,
 			func(ctx context.Context) error {
@@ -100,13 +101,14 @@ func (sar *stepActionRemote) prepareActionExecutor() common.Executor {
 
 func (sar *stepActionRemote) pre() common.Executor {
 	sar.env = map[string]string{}
-
+	fmt.Println("step_action_remote pre NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		sar.prepareActionExecutor(),
 		runStepExecutor(sar, stepStagePre, runPreStep(sar)).If(hasPreStep(sar)).If(shouldRunPreStep(sar)))
 }
 
 func (sar *stepActionRemote) main() common.Executor {
+	fmt.Println("step_action_remote main NewPipelineExecutor")
 	return common.NewPipelineExecutor(
 		sar.prepareActionExecutor(),
 		runStepExecutor(sar, stepStageMain, func(ctx context.Context) error {

@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"fmt"
 )
 
 type dryrunContextKey string
@@ -21,5 +22,6 @@ func Dryrun(ctx context.Context) bool {
 
 // WithDryrun adds a value to the context for dryrun
 func WithDryrun(ctx context.Context, dryrun bool) context.Context {
+	fmt.Println("WithDryrun dryrun ", dryrun)
 	return context.WithValue(ctx, dryrunContextKeyVal, dryrun)
 }
